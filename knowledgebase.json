@@ -1,0 +1,374 @@
+{
+  "system": {
+    "name": "Yogasana",
+    "description": "Machine Learning-based Yoga Pose Evaluation System",
+    "version": "1.0.0"
+  },
+  "algorithm": {
+    "feature_extraction": "MediaPipe Pose Landmarker extracts 33 3D body landmark coordinates at 30 FPS.",
+    "joint_angles": [
+      "Calculate 8 critical joint angles in 2D space (using X and Y coordinates on the camera image plane).",
+      "For joint B between points A and C, compute vectors BA = A - B and BC = C - B.",
+      "The angle theta = arccos((BA . BC) / (|BA| * |BC|)) in degrees, normalized to range [0, 180]."
+    ],
+    "classification": {
+      "model": "Random Forest Classifier",
+      "input_features": "8 normalized joint angles: [left_elbow, right_elbow, left_shoulder, right_shoulder, left_hip, right_hip, left_knee, right_knee]",
+      "output": "Pose name (e.g., Mountain Pose, Tree Pose, Warrior II, Chair Pose, Cobra Pose, Triangle Pose)",
+      "parameters": {
+        "n_estimators": 100,
+        "max_depth": 10,
+        "random_state": 42
+      }
+    },
+    "posture_evaluation": {
+      "score_formula": "Score = max(0, 100 - Average_Error)",
+      "error_calculation": "Average_Error = mean(|Actual_Angle[i] - Template_Angle[i]|) for all active joints",
+      "incorrect_threshold_degrees": 15.0
+    }
+  },
+  "joints_map": {
+    "left_elbow": {
+      "a": 11,
+      "b": 13,
+      "c": 15,
+      "name_a": "left_shoulder",
+      "name_b": "left_elbow",
+      "name_c": "left_wrist"
+    },
+    "right_elbow": {
+      "a": 12,
+      "b": 14,
+      "c": 16,
+      "name_a": "right_shoulder",
+      "name_b": "right_elbow",
+      "name_c": "right_wrist"
+    },
+    "left_shoulder": {
+      "a": 23,
+      "b": 11,
+      "c": 13,
+      "name_a": "left_hip",
+      "name_b": "left_shoulder",
+      "name_c": "left_elbow"
+    },
+    "right_shoulder": {
+      "a": 24,
+      "b": 12,
+      "c": 14,
+      "name_a": "right_hip",
+      "name_b": "right_shoulder",
+      "name_c": "right_elbow"
+    },
+    "left_hip": {
+      "a": 25,
+      "b": 23,
+      "c": 11,
+      "name_a": "left_knee",
+      "name_b": "left_hip",
+      "name_c": "left_shoulder"
+    },
+    "right_hip": {
+      "a": 26,
+      "b": 24,
+      "c": 12,
+      "name_a": "right_knee",
+      "name_b": "right_hip",
+      "name_c": "right_shoulder"
+    },
+    "left_knee": {
+      "a": 27,
+      "b": 25,
+      "c": 23,
+      "name_a": "left_ankle",
+      "name_b": "left_knee",
+      "name_c": "left_hip"
+    },
+    "right_knee": {
+      "a": 28,
+      "b": 26,
+      "c": 24,
+      "name_a": "right_ankle",
+      "name_b": "right_knee",
+      "name_c": "right_hip"
+    }
+  },
+  "poses": {
+    "Mountain Pose": {
+      "angles": {
+        "left_elbow": 180.0,
+        "right_elbow": 180.0,
+        "left_shoulder": 15.0,
+        "right_shoulder": 15.0,
+        "left_hip": 180.0,
+        "right_hip": 180.0,
+        "left_knee": 180.0,
+        "right_knee": 180.0
+      },
+      "feedback": {
+        "left_elbow": {
+          "too_low": "Straighten your left arm.",
+          "too_high": ""
+        },
+        "right_elbow": {
+          "too_low": "Straighten your right arm.",
+          "too_high": ""
+        },
+        "left_shoulder": {
+          "too_low": "",
+          "too_high": "Lower your left arm to your side."
+        },
+        "right_shoulder": {
+          "too_low": "",
+          "too_high": "Lower your right arm to your side."
+        },
+        "left_hip": {
+          "too_low": "Stand up straight, do not bend forward at your hips.",
+          "too_high": ""
+        },
+        "right_hip": {
+          "too_low": "Stand up straight, do not bend forward at your hips.",
+          "too_high": ""
+        },
+        "left_knee": {
+          "too_low": "Straighten your left leg.",
+          "too_high": ""
+        },
+        "right_knee": {
+          "too_low": "Straighten your right leg.",
+          "too_high": ""
+        }
+      }
+    },
+    "Tree Pose": {
+      "angles": {
+        "left_elbow": 90.0,
+        "right_elbow": 90.0,
+        "left_shoulder": 35.0,
+        "right_shoulder": 35.0,
+        "left_hip": 120.0,
+        "right_hip": 180.0,
+        "left_knee": 45.0,
+        "right_knee": 180.0
+      },
+      "feedback": {
+        "left_elbow": {
+          "too_low": "Bend your left elbow more, bring hands to prayer.",
+          "too_high": "Relax your elbows slightly."
+        },
+        "right_elbow": {
+          "too_low": "Bend your right elbow more, bring hands to prayer.",
+          "too_high": "Relax your elbows slightly."
+        },
+        "left_shoulder": {
+          "too_low": "Raise your left shoulder slightly, broaden your chest.",
+          "too_high": "Lower your left shoulder slightly."
+        },
+        "right_shoulder": {
+          "too_low": "Raise your right shoulder slightly, broaden your chest.",
+          "too_high": "Lower your right shoulder slightly."
+        },
+        "left_hip": {
+          "too_low": "Open your left hip, press your knee out.",
+          "too_high": "Bring your left knee out more, aligning your hip."
+        },
+        "right_hip": {
+          "too_low": "Stand tall on your right leg, don't sag at the hip.",
+          "too_high": ""
+        },
+        "left_knee": {
+          "too_low": "Raise your left foot higher on your right leg.",
+          "too_high": "Bend your left knee more to place foot on inner thigh."
+        },
+        "right_knee": {
+          "too_low": "Lock your standing right knee straight.",
+          "too_high": ""
+        }
+      }
+    },
+    "Warrior II": {
+      "angles": {
+        "left_elbow": 180.0,
+        "right_elbow": 180.0,
+        "left_shoulder": 90.0,
+        "right_shoulder": 90.0,
+        "left_hip": 110.0,
+        "right_hip": 150.0,
+        "left_knee": 90.0,
+        "right_knee": 180.0
+      },
+      "feedback": {
+        "left_elbow": {
+          "too_low": "Straighten your left arm, extend through fingers.",
+          "too_high": ""
+        },
+        "right_elbow": {
+          "too_low": "Straighten your right arm, reach backward.",
+          "too_high": ""
+        },
+        "left_shoulder": {
+          "too_low": "Raise your left arm to shoulder level.",
+          "too_high": "Lower your left arm to shoulder level."
+        },
+        "right_shoulder": {
+          "too_low": "Raise your right arm to shoulder level.",
+          "too_high": "Lower your right arm to shoulder level."
+        },
+        "left_hip": {
+          "too_low": "Sink deeper into your hips.",
+          "too_high": "Align your hips, square to the side."
+        },
+        "right_hip": {
+          "too_low": "Extend through your back right hip.",
+          "too_high": ""
+        },
+        "left_knee": {
+          "too_low": "Bend your left knee more to a 90 degree angle.",
+          "too_high": "Straighten your front knee slightly, do not go past ankle."
+        },
+        "right_knee": {
+          "too_low": "Straighten your right back leg.",
+          "too_high": ""
+        }
+      }
+    },
+    "Chair Pose": {
+      "angles": {
+        "left_elbow": 180.0,
+        "right_elbow": 180.0,
+        "left_shoulder": 160.0,
+        "right_shoulder": 160.0,
+        "left_hip": 115.0,
+        "right_hip": 115.0,
+        "left_knee": 110.0,
+        "right_knee": 110.0
+      },
+      "feedback": {
+        "left_elbow": {
+          "too_low": "Straighten your left elbow, raise arms high.",
+          "too_high": ""
+        },
+        "right_elbow": {
+          "too_low": "Straighten your right elbow, raise arms high.",
+          "too_high": ""
+        },
+        "left_shoulder": {
+          "too_low": "Reach your left arm higher and back.",
+          "too_high": ""
+        },
+        "right_shoulder": {
+          "too_low": "Reach your right arm higher and back.",
+          "too_high": ""
+        },
+        "left_hip": {
+          "too_low": "Sit deeper, lower your hips.",
+          "too_high": "Sit your hips back and down, bend hips more."
+        },
+        "right_hip": {
+          "too_low": "Sit deeper, lower your hips.",
+          "too_high": "Sit your hips back and down, bend hips more."
+        },
+        "left_knee": {
+          "too_low": "Bend your left knee more.",
+          "too_high": "Don't squat too deep, lift your hips slightly."
+        },
+        "right_knee": {
+          "too_low": "Bend your right knee more.",
+          "too_high": "Don't squat too deep, lift your hips slightly."
+        }
+      }
+    },
+    "Cobra Pose": {
+      "angles": {
+        "left_elbow": 140.0,
+        "right_elbow": 140.0,
+        "left_shoulder": 55.0,
+        "right_shoulder": 55.0,
+        "left_hip": 160.0,
+        "right_hip": 160.0,
+        "left_knee": 180.0,
+        "right_knee": 180.0
+      },
+      "feedback": {
+        "left_elbow": {
+          "too_low": "Bend your left elbow slightly, hug it to your side.",
+          "too_high": "Extend through your spine, raise chest more."
+        },
+        "right_elbow": {
+          "too_low": "Bend your right elbow slightly, hug it to your side.",
+          "too_high": "Extend through your spine, raise chest more."
+        },
+        "left_shoulder": {
+          "too_low": "Roll your shoulders back and down, open your chest.",
+          "too_high": "Relax your shoulders away from your ears."
+        },
+        "right_shoulder": {
+          "too_low": "Roll your shoulders back and down, open your chest.",
+          "too_high": "Relax your shoulders away from your ears."
+        },
+        "left_hip": {
+          "too_low": "Press your pelvis firmly into the floor.",
+          "too_high": "Keep your hips on the mat."
+        },
+        "right_hip": {
+          "too_low": "Press your pelvis firmly into the floor.",
+          "too_high": "Keep your hips on the mat."
+        },
+        "left_knee": {
+          "too_low": "Keep your legs straight and active on the floor.",
+          "too_high": ""
+        },
+        "right_knee": {
+          "too_low": "Keep your legs straight and active on the floor.",
+          "too_high": ""
+        }
+      }
+    },
+    "Triangle Pose": {
+      "angles": {
+        "left_elbow": 180.0,
+        "right_elbow": 180.0,
+        "left_shoulder": 90.0,
+        "right_shoulder": 90.0,
+        "left_hip": 100.0,
+        "right_hip": 130.0,
+        "left_knee": 180.0,
+        "right_knee": 180.0
+      },
+      "feedback": {
+        "left_elbow": {
+          "too_low": "Extend your left arm straight towards the ground.",
+          "too_high": ""
+        },
+        "right_elbow": {
+          "too_low": "Extend your right arm straight up to the sky.",
+          "too_high": ""
+        },
+        "left_shoulder": {
+          "too_low": "Open your shoulders, raise your arms horizontally.",
+          "too_high": "Keep your arms in a straight vertical line."
+        },
+        "right_shoulder": {
+          "too_low": "Open your shoulders, raise your arms horizontally.",
+          "too_high": "Keep your arms in a straight vertical line."
+        },
+        "left_hip": {
+          "too_low": "Hinge deeply at your side hip.",
+          "too_high": "Open your chest, press your hips forward."
+        },
+        "right_hip": {
+          "too_low": "Lengthen through your right side body.",
+          "too_high": ""
+        },
+        "left_knee": {
+          "too_low": "Keep your left leg straight.",
+          "too_high": ""
+        },
+        "right_knee": {
+          "too_low": "Keep your right leg straight.",
+          "too_high": ""
+        }
+      }
+    }
+  }
+}
