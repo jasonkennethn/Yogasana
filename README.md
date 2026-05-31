@@ -1,4 +1,4 @@
-# Yogasana: AI Yoga Pose Evaluator
+# Yogasana: AI Yoga Pose Evaluation
 
 Yogasana is a cross-platform, machine learning-powered yoga pose evaluation system. Using computer vision via MediaPipe landmark tracking and a Random Forest Classifier, the system identifies user yoga postures in real time, evaluates joint alignment against standard pose templates, and displays dynamic, real-time correction feedback.
 
